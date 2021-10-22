@@ -1,0 +1,122 @@
+
+//Retorna  o percentual de mortes por covid em 2020 e 2021 por estado
+PREFIX rdfs: <https://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://example.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <https://dbpedia.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+select ?nome ((xsd:double(xsd:integer(?covid)/(xsd:integer(?total21) + xsd:integer(?total20)))) as ?PercentualMortesPorCovid) where { 
+    
+    ?state rdf:type dbo:state . 
+	?state ex:mortes2021 ?total21 .
+	?state ex:mortes2020 ?total20 .
+	?state ex:mortescovid20e21 ?covid.	
+	?state rdfs:label ?nome .
+
+}order by desc(?PercentualMortesPorCovid)
+
+
+
+//Retorna a média de mortes por covid nos quais bolsonaro perdeu no segundo turno e não ganhou com + de 50% de votos no primeiro turno
+PREFIX rdfs: <https://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://example.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <https://dbpedia.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+select (avg((xsd:double(xsd:integer(?covid)/(xsd:integer(?total21) + xsd:integer(?total20)))) ) as ?avg) where { 
+    
+    ?state rdf: dbo:state . 
+	?state ex:mortes2021 ?total21 .
+	?state ex:mortes2020 ?total20 .
+	?state ex:mortescovid20e21 ?covid.
+    ?state ex:ganhoumais50r1 "N" .
+    ?state ex:ganhou2r "N" .
+    
+
+}
+
+//Retorna a média de mortes por covid nos quais bolsonaro ganhou no segundo turno e não ganhou com + de 50% de votos no primeiro turno
+PREFIX rdfs: <https://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://example.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <https://dbpedia.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+select (avg((xsd:double(xsd:integer(?covid)/(xsd:integer(?total21) + xsd:integer(?total20)))) ) as ?avg) where { 
+    
+    ?state rdf: dbo:state . 
+	?state ex:mortes2021 ?total21 .
+	?state ex:mortes2020 ?total20 .
+	?state ex:mortescovid20e21 ?covid.
+    ?state ex:ganhoumais50r1 "N" .
+    ?state ex:ganhou2r "Y" .
+    
+
+}
+
+
+//Retorna a média de mortes por covid nos quais bolsonaro ganhou no segundo turno e ganhou com + de 50% de votos no primeiro turno
+PREFIX rdfs: <https://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://example.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <https://dbpedia.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+select (avg((xsd:double(xsd:integer(?covid)/(xsd:integer(?total21) + xsd:integer(?total20)))) ) as ?avg) where { 
+    
+    ?state rdf: dbo:state . 
+	?state ex:mortes2021 ?total21 .
+	?state ex:mortes2020 ?total20 .
+	?state ex:mortescovid20e21 ?covid.
+    ?state ex:ganhoumais50r1 "Y" .
+    ?state ex:ganhou2r "Y" .
+    
+
+}
+
+//Total de mortes por covid por estado em 2020 e 2021
+PREFIX rdfs: <https://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://example.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <https://dbpedia.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+select ?nome ?MortesPorCovid where { 
+    
+    ?state rdf: dbo:state . 
+	?state ex:mortescovid20e21 ?MortesPorCovid.    
+    ?state  rdfs:label ?nome
+
+}order by desc (?MortesPorCovid)
+
+
+//Retorna o percentual de mortalidade por estado
+
+PREFIX rdfs: <https://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://example.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <https://dbpedia.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+select ?nome ((xsd:double(xsd:integer(?mortes)/(xsd:integer(?casos)))) as ?result) where { 
+    
+    ?state rdf: dbo:state . 
+	?state ex:mortescovid20e21 ?mortes .
+	?state ex:casos20e21 ?casos .	
+    ?state rdfs:label ?nome .
+    
+
+}order by desc(?result)
+
+//Retorna o percentual de óbitos em 2020 e 2021 junto do percentual da população acima de 70 anos em 2019 por estado
+PREFIX rdfs: <https://www.w3.org/2000/01/rdf-schema#>
+PREFIX ex: <https://example.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <https://dbpedia.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+select ?nome ((xsd:double(xsd:integer(?mortes)/(xsd:integer(?casos)))) as ?result) (xsd:double(xsd:integer(?acima70)/(xsd:integer(?populacao))) as ?percentualacima70) where { 
+    
+    ?state rdf: dbo:state . 
+	?state ex:mortescovid20e21 ?mortes .
+	?state ex:casos20e21 ?casos .	
+    ?state ex:acima70em2019 ?acima70 .
+    ?state ex:populacao2019 ?populacao .
+    ?state rdfs:label ?nome .
+
+}order by desc(?result)
